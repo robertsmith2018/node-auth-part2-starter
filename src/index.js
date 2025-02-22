@@ -11,18 +11,25 @@ import { authorizeUser } from "./accounts/authorize.js"
 import { logUserIn } from "./accounts/logUserIn.js"
 import { logUserOut } from "./accounts/logUserOut.js"
 import { getUserFromCookies } from "./accounts/user.js"
+import { mailInit, sendEmail } from "./mail/index.js";
 
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const app = fastify()
+const app = fastify();
 
 async function startApp() {
   try {
+    await mailInit();
+    console.log("Mail initialized successfully");
+
+    await sendEmail({
+      subject: "Test Email",
+      html: "<h1>Hello Mail inbound!</h1>",
+    });
     app.register(fastifyCors, {
       origin: [ /\.nodeauth.dev(:8443)?$/,"https://nodeauth.dev:8443"],
-      
       credentials: true,
     })
 
