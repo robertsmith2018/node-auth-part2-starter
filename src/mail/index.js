@@ -19,8 +19,8 @@ export async function mailInit() {
 export async function sendEmail({
   from = "johndoe@test.com",
   to = "johndoet@test.com",
-  subject,
-  html,
+  subject = "Email Subject Default",
+  html = "Content",
 }) {
   try {
     // Ensure the email transporter is initialized
