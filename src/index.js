@@ -21,7 +21,7 @@ const app = fastify()
 async function startApp() {
   try {
     app.register(fastifyCors, {
-      origin: [ /\.nodeauth.dev(:8443)?$/,"https://nodeauth.dev:8443","https://api.nodeauth.dev:8443"],
+      origin: [ /\.nodeauth.dev(:8443)?$/,"https://nodeauth.dev:8443"],
       
       credentials: true,
     })
