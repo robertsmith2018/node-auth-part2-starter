@@ -21,13 +21,10 @@ const app = fastify();
 
 async function startApp() {
   try {
-    await mailInit();
+    const transporter = await mailInit();
+    await sendEmail(transporter)
     console.log("Mail initialized successfully");
 
-    await sendEmail({
-      subject: "Test Email",
-      html: "<h1>Hello Mail inbound!</h1>",
-    });
     app.register(fastifyCors, {
       origin: [ /\.nodeauth.dev(:8443)?$/,"https://nodeauth.dev:8443"],
       credentials: true,

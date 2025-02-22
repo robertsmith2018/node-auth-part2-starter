@@ -13,6 +13,7 @@ export async function mailInit() {
       pass: testAccount.pass,
     },
   });
+  return mail
 }
 
 export async function sendEmail({
