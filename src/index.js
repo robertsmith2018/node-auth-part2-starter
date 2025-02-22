@@ -21,8 +21,11 @@ const app = fastify();
 
 async function startApp() {
   try {
-    const transporter = await mailInit();
-    await sendEmail(transporter)
+    await mailInit();
+    await sendEmail({
+      subject: "New Subject",
+      html: "<h2>New Content</h2>"
+    })
     console.log("Mail initialized successfully");
 
     app.register(fastifyCors, {
