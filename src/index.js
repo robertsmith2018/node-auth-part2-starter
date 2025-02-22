@@ -11,7 +11,9 @@ import { authorizeUser } from "./accounts/authorize.js"
 import { logUserIn } from "./accounts/logUserIn.js"
 import { logUserOut } from "./accounts/logUserOut.js"
 import { getUserFromCookies } from "./accounts/user.js"
-import { mailInit, sendEmail } from "./mail/index.js";
+import { mailInit, sendEmail } from "./mail/index.js"
+import { createVerifyEmailLink } from "./accounts/verify.js"
+
 
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url)
@@ -22,10 +24,7 @@ const app = fastify();
 async function startApp() {
   try {
     await mailInit();
-    await sendEmail({
-      subject: "New Subject",
-      html: "<h2>New Content</h2>"
-    })
+
     console.log("Mail initialized successfully");
 
     app.register(fastifyCors, {
@@ -48,6 +47,12 @@ async function startApp() {
           request.body.password
         )
         if (userId) {
+          const emailLink = await createVerifyEmailLink(request.body.email)
+          await sendEmail({
+            to: request.body.email,
+            subject: "Please verify your email",
+            html: `<a href="${emailLink}">Click here to verify</a>`,
+          })
           await logUserIn(userId, request, reply)
           reply.send({
             data: {
