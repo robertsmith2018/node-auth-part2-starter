@@ -1,7 +1,7 @@
 import "./env.js"
 import { fastify } from "fastify"
 import fastifyStatic from "fastify-static"
-import fastifyCookie from "@fastify/cookie";
+import fastifyCookie from "@fastify/cookie"
 import fastifyCors from "fastify-cors"
 import path from "path"
 import { fileURLToPath } from "url"
@@ -11,25 +11,21 @@ import { authorizeUser } from "./accounts/authorize.js"
 import { logUserIn } from "./accounts/logUserIn.js"
 import { logUserOut } from "./accounts/logUserOut.js"
 import { getUserFromCookies } from "./accounts/user.js"
-import { mailInit, sendEmail } from "./mail/index.js";
+import { sendEmail, mailInit } from "./mail/index.js"
+import { createVerifyEmailLink } from "./accounts/verify.js"
 
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const app = fastify();
+const app = fastify()
 
 async function startApp() {
   try {
-    await mailInit();
-    await sendEmail({
-      subject: "New Subject",
-      html: "<h2>New Content</h2>"
-    })
-    console.log("Mail initialized successfully");
+    await mailInit()
 
     app.register(fastifyCors, {
-      origin: [ /\.nodeauth.dev(:8443)?$/,"https://nodeauth.dev:8443"],
+      origin: [/\.nodeauth.dev/, "https://nodeauth.dev"],
       credentials: true,
     })
 
@@ -47,7 +43,15 @@ async function startApp() {
           request.body.email,
           request.body.password
         )
+        // If account creations was successful
         if (userId) {
+          const emailLink = await createVerifyEmailLink(request.body.email)
+          await sendEmail({
+            to: request.body.email,
+            subject: "Verify your email",
+            html: `<a href="${emailLink}">verify</a>`,
+          })
+
           await logUserIn(userId, request, reply)
           reply.send({
             data: {
@@ -132,7 +136,6 @@ async function startApp() {
     })
 
     await app.listen(5000)
-    
     console.log("🚀 Server Listening at port: 5000")
   } catch (e) {
     console.error(e)
