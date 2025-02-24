@@ -5,13 +5,13 @@
 	https_port 8443
 }
 
-nodeauth.dev {
+api.nodeauth.dev {
 	bind 127.0.0.1
 	tls internal
 	reverse_proxy localhost:5000
 }
 
-api.nodeauth.dev {
+nodeauth.dev {
 	bind 127.0.0.1
 	tls internal
 	reverse_proxy localhost:3000

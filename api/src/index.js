@@ -24,10 +24,9 @@ async function startApp() {
   try {
     await mailInit()
 
-    app.register(fastifyCors, {
-      origin: [/\.nodeauth.dev/, "https://nodeauth.dev"],
-      credentials: true,
-    })
+    app.register(fastifyCors, { 
+      origin: ["https://nodeauth.dev:8443", /.nodeauth.dev/], 
+      credentials: true, })
 
     app.register(fastifyCookie, {
       secret: process.env.COOKIE_SIGNATURE,

@@ -17,8 +17,9 @@ async function startApp(){
 
         app.get("/verify/:email/:token", {}, async (request, reply) => {
             try {
-              console.log("request", request)
-              reply.code(200).send("All is good!")  
+                const { email, token } = request.params;
+                console.log("request", request.params.email, request.params.token)
+                reply.code(200).send("All is good!")  
             } catch (e) {
                 console.log(e);
             }
