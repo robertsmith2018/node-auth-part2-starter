@@ -1,4 +1,5 @@
 import fastify from  "fastify";
+import fetch from "cross-fetch";
 import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -13,7 +14,17 @@ async function startApp(){
         app.register(fastifyStatic, {
             root: path.join(__dirname, "public"),
         });
-        const PORT = 3000; // Changed port number to avoid conflict
+
+        app.get("/verify/:email/:token", {}, async (request, reply) => {
+            try {
+              console.log("request", request)
+              reply.code(200).send("All is good!")  
+            } catch (e) {
+                console.log(e);
+            }
+        });
+
+        const PORT = 3000;
         await app.listen(PORT);
         console.log(`Server is running on http://localhost:${PORT}`);
     }catch(e){
