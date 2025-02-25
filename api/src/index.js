@@ -25,8 +25,9 @@ async function startApp() {
     await mailInit()
 
     app.register(fastifyCors, { 
-      origin: ["https://nodeauth.dev:8443", /.nodeauth.dev/], 
-      credentials: true, })
+      origin: ["https://nodeauth.dev:8443", /\.nodeauth\.dev$/], 
+      credentials: true, 
+    })
 
     app.register(fastifyCookie, {
       secret: process.env.COOKIE_SIGNATURE,
@@ -115,7 +116,7 @@ async function startApp() {
       }
     })
 
-    app.get("/test", {}, async (request, reply) => {
+    app.get("/api/test", {}, async (request, reply) => {
       try {
         // Verify user login
         const user = await getUserFromCookies(request, reply)
