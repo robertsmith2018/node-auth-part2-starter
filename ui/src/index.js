@@ -36,6 +36,7 @@ async function startApp() {
           agent: httpsAgent,
           headers: { "Content-type": "application/json; charset=UTF-8" },
         })
+        console.log("res", res)
         if (res.status === 200) {
           return reply.redirect("/")
         }
@@ -46,7 +47,7 @@ async function startApp() {
       }
     })
 
-    const PORT = 5000
+    const PORT = 3000
     await app.listen(PORT)
     console.log(`🚀 Server Listening at port: ${PORT}`)
   } catch (e) {

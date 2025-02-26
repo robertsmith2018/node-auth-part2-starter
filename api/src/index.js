@@ -116,6 +116,26 @@ async function startApp() {
       }
     })
 
+    app.post("/api/verify", {}, async (request, reply) => {
+      try {
+        const { email, token } = request.body
+        console.log("token, email", token, email)
+        reply.send({
+          data: {
+            status: "SUCCESS",
+          },
+        })
+      } catch (e) {
+        console.error(e)
+        reply.send({
+          data: {
+            status: "FAILED",
+            userId,
+          },
+        })
+      }
+    })
+
     app.get("/api/test", {}, async (request, reply) => {
       try {
         // Verify user login
