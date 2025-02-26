@@ -26,9 +26,29 @@ export async function createVerifyEmailLink(email) {
 
 export async function verifyEmailToken(email, token) {
   try {
+    //create a token from the email that you have received from the token link and the
+    //jwt signature
     const emailToken = await createVerifyEmailToken(email)
-    return emailToken === token
+
+    //compare the token from the email with the token from the link
+    const isValid = emailToken === token
+    // If successful, update user, to make it verified
+    if (isValid) {
+      //update user to make it verified
+      const {user}= await import("../user/user.js")
+        await user.updateOne(
+        { 
+          "email.address": email 
+        }, 
+        { 
+          $set: { "email.verified": true } 
+        })
+      return true
+    }
+    return false
+
   } catch (e) {
     console.log("e", e)
+    return false
   }
 }

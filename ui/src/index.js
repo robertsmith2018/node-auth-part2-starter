@@ -1,7 +1,7 @@
 import https from "https"
 import { fastify } from "fastify"
 import fetch from "cross-fetch"
-import fastifyStatic from "fastify-static"
+import fastifyStatic from "@fastify/static"
 import path from "path"
 import { fileURLToPath } from "url"
 
@@ -19,6 +19,7 @@ async function startApp() {
 
     app.get("/verify/:email/:token", {}, async (request, reply) => {
       try {
+        console.log("request", request)
         const { email, token } = request.params
         const values = {
           email,
@@ -35,8 +36,9 @@ async function startApp() {
           credentials: "include",
           agent: httpsAgent,
           headers: { "Content-type": "application/json; charset=UTF-8" },
+          
         })
-      
+        console.log("res", res.status)
         if (res.status === 200) {
           return reply.redirect("/")
         }

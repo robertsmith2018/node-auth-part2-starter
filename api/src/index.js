@@ -12,7 +12,7 @@ import { logUserIn } from "./accounts/logUserIn.js"
 import { logUserOut } from "./accounts/logUserOut.js"
 import { getUserFromCookies } from "./accounts/user.js"
 import { sendEmail, mailInit } from "./mail/index.js"
-import { createVerifyEmailLink } from "./accounts/verify.js"
+import { createVerifyEmailLink, verifyEmailToken } from "./accounts/verify.js"
 
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url)
@@ -120,11 +120,11 @@ async function startApp() {
       try {
         const { email, token } = request.body
         console.log("token, email", token, email)
-        reply.send({
-          data: {
-            status: "SUCCESS",
-          },
-        })
+        const isValid = await verifyEmailToken(email, token)
+        if(isValid){
+          return reply.code(200).send()
+        }
+        reply.code(401).send()
       } catch (e) {
         console.error(e)
         reply.send({
