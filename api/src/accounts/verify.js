@@ -23,3 +23,12 @@ export async function createVerifyEmailLink(email) {
     console.log("e", e)
   }
 }
+
+export async function verifyEmailToken(email, token) {
+  try {
+    const emailToken = await createVerifyEmailToken(email)
+    return emailToken === token
+  } catch (e) {
+    console.log("e", e)
+  }
+}

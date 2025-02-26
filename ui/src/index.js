@@ -29,14 +29,14 @@ async function startApp() {
           rejectUnauthorized: false,
         })
 
-        const res = await fetch("https://api.nodeauth.dev/api/verify", {
+        const res = await fetch("https://api.nodeauth.dev:8443/api/verify", {
           method: "POST",
           body: JSON.stringify(values),
           credentials: "include",
           agent: httpsAgent,
           headers: { "Content-type": "application/json; charset=UTF-8" },
         })
-        console.log("res", res)
+      
         if (res.status === 200) {
           return reply.redirect("/")
         }
