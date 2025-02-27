@@ -31,6 +31,21 @@
     <hr />
     <br />
 
+    <h3>Change Password</h3>
+    <form id="change-form">
+    <label for="oldPassword">Old Password
+      <input type="password" id="oldPassword" name="oldPassword" />
+    </label>
+    <label for="newPassword">New Password
+      <input type="password" id="newPassword" name="newPassword" />
+      <button type="submit">Change Passaword</button>
+    </label>
+    </form>
+
+    <br />
+    <hr />
+    <br />
+
     <button onclick="logout()">Logout</button>
     <button onclick="dumpData()">dumpData</button>
 
@@ -105,6 +120,31 @@
           }
         })
       })()
+
+        // Find form element
+        const changeForm = document.getElementById("change-form")
+        // Wait for event
+        changeForm.addEventListener("submit", async (e) => {
+          e.preventDefault()
+          try {
+            // get form values
+            const values = Object.values(changeForm).reduce((obj, field) => {
+              if (field.name) {
+                obj[field.name] = field.value
+              }
+              return obj
+            }, {})
+            // Submit form
+            const res = await fetch("https://api.nodeauth.dev:8443/api/change-password", {
+              method: "POST",
+              body: JSON.stringify(values),
+              credentials: "include",
+              headers: { "Content-type": "application/json; charset=UTF-8" },
+            })
+          } catch (e) {
+            console.error(e)
+          }
+        });
     </script>
   </body>
 </html>
