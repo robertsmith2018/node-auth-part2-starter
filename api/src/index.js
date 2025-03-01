@@ -13,6 +13,7 @@ import { logUserOut } from "./accounts/logUserOut.js"
 import { getUserFromCookies, changePassword } from "./accounts/user.js"
 import { sendEmail, mailInit } from "./mail/index.js"
 import { createVerifyEmailLink, verifyEmailToken } from "./accounts/verify.js"
+import { createResetLink } from "./accounts/reset.js"
 
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url)
@@ -158,6 +159,27 @@ async function startApp() {
             userId,
           },
         })
+      }
+    })
+
+    app.post("/api/forgot-password", {}, async (request, reply) => {
+      try {
+        const { email } = request.body
+        console.log("email", email)
+        const link = await createResetLink(email)
+        // Send email with link
+        if (link) {
+          await sendEmail({
+            to: email,
+            subject: "Reset your password",
+            html: `<a href="${link}">Reset</a>`,
+          })
+        }
+
+        return reply.code(200).send()
+      } catch (e) {
+        console.error(e)
+        return reply.code(401).send()
       }
     })
 
