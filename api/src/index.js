@@ -82,11 +82,11 @@ async function startApp() {
 
     app.post("/api/authorize", {}, async (request, reply) => {
       try {
-        const { isAuthorized, userId } = await authorizeUser(
+        const { isAuthorized, userId, authenticatorSecret } = await authorizeUser(
           request.body.email,
           request.body.password
         )
-        if (isAuthorized) {
+        if (isAuthorized && !authenticatorSecret) {
           await logUserIn(userId, request, reply)
           reply.send({
             data: {
@@ -94,7 +94,15 @@ async function startApp() {
               userId,
             },
           })
-        }
+        } else if (isAuthorized && authenticatorSecret) {
+          reply.send({
+            data: {
+              status: "2FA_REQUIRED",
+              userId,
+            },
+          })
+        } 
+        reply.code(401).send()
       } catch (e) {
         console.error(e)
         reply.send({

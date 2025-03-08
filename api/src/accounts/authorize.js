@@ -1,3 +1,4 @@
+import { authenticator } from "@otplib/preset-default"
 import bcrypt from "bcryptjs"
 const { compare } = bcrypt
 
@@ -13,5 +14,9 @@ export async function authorizeUser(email, password) {
   // Compare password with one in database
   const isAuthorized = await compare(password, savedPassword)
   // Return boolean of if password is correct
-  return { isAuthorized, userId: userData._id }
+  return { 
+    isAuthorized, 
+    userId: userData._id,
+    authenticatorSecret: userData.authenticator,
+   }
 }
