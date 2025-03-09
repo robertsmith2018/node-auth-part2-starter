@@ -197,6 +197,22 @@ async function startApp() {
       reply.code(401).send()
     })
 
+    app.post("/api/2fa-verify", {}, async (request, reply) => {
+      // Verify user login
+      const { token, email, password } = request.body
+      const {
+        isAuthorized,
+        userId,
+        authenticatorSecret,
+      } = await authorizeUser(email, password)
+      const isValid = authenticator.verify({ token, secret: authenticatorSecret })
+      if(userId && isAuthorized && isValid){
+        await logUserIn(userId, request, reply)
+        reply.send("success")
+      }
+      reply.code(401).send()
+    })
+
     app.post("/api/verify", {}, async (request, reply) => {
       try {
         const { email, token } = request.body
